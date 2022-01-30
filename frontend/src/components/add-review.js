@@ -1,37 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import RestaurantDataService from "../services/restaurant";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useSearchParams, useLocation, useParams} from "react-router-dom";
 
 const AddReview = props => {
   let initialReviewState = ""
 
-  const navigate = useNavigate();
-  const id = useParams();
-
-  let editing = false;
-
-  if (props.location && props.location.currentReview) {
-    editing = true;
-    initialReviewState = props.location.currentReview.text
-  }
+  const location = useLocation()
+  const { id } = useParams();
+  const [param] = useSearchParams()
 
   const [review, setReview] = useState(initialReviewState);
   const [submitted, setSubmitted] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   const handleInputChange = event => {
     setReview(event.target.value);
   };
 
+ useEffect(() => {
+    if(location.state?.currentReview?.user_id === props.user?.id){
+        setEditing(true)
+    }
+  }
+ ,[location])
+
+ console.log(location.state.currentReview._id)
+
+
   const saveReview = () => {
-    var data = {
+    const data = {
       text: review,
       name: props.user.name,
       user_id: props.user.id,
       restaurant_id: id
     };
 
+    console.log(location.state.currentReview)
+
     if (editing) {
-      data.review_id = props.currentReview._id
+      data.review_id = location.state.currentReview._id
       RestaurantDataService.updateReview(data)
         .then(response => {
           setSubmitted(true);
@@ -41,7 +48,6 @@ const AddReview = props => {
           console.log(e);
         });
     } else {
-      console.log(data)
       RestaurantDataService.createReview(data)
         .then(response => {
           setSubmitted(true);
@@ -68,7 +74,7 @@ const AddReview = props => {
         ) : (
           <div>
             <div className="form-group">
-              <label htmlFor="description">{ editing ? "Edit" : "Create" } Review</label>
+              <label htmlFor="description">{ location.state?.currentReview?.user_id === props.user.id ? "Edit" : "Create" } Review</label>
               <input
                 type="text"
                 className="form-control"

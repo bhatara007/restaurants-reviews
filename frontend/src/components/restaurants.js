@@ -60,7 +60,7 @@ const Restaurant = props => {
             {restaurant.address.zipcode}
           </p>
           <Link
-            to={"/restaurants/ " + restaurant._id + "/review"}
+            to={"/restaurants/" + id + "/review"}
             className="btn btn-primary"
           >
             Add Review
@@ -91,14 +91,13 @@ const Restaurant = props => {
                               Delete
                             </a>
                             <Link
-                              to={{
-                                pathname:
+                              to={
                                   "/restaurants/" +
                                   id +
-                                  "/review",
-                                state: {
-                                  currentReview: review,
-                                },
+                                  "/review"
+                              }
+                              state={{
+                                currentReview: review,
                               }}
                               className="btn btn-primary col-lg-5 mx-1 mb-1"
                             >
