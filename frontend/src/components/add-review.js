@@ -24,8 +24,6 @@ const AddReview = props => {
   }
  ,[location])
 
- console.log(location.state.currentReview._id)
-
 
   const saveReview = () => {
     const data = {
@@ -34,8 +32,6 @@ const AddReview = props => {
       user_id: props.user.id,
       restaurant_id: id
     };
-
-    console.log(location.state.currentReview)
 
     if (editing) {
       data.review_id = location.state.currentReview._id
@@ -63,41 +59,46 @@ const AddReview = props => {
   return (
     <div>
       {props.user ? (
-      <div className="submit-form">
-        {submitted ? (
-          <div>
-            <h4>You submitted successfully!</h4>
-            <Link to={"/restaurants/" + id} className="btn btn-success">
-              Back to Restaurant
-            </Link>
-          </div>
-        ) : (
-          <div>
-            <div className="form-group">
-              <label htmlFor="description">{ location.state?.currentReview?.user_id === props.user.id ? "Edit" : "Create" } Review</label>
-              <input
-                type="text"
-                className="form-control"
-                id="text"
-                required
-                value={review}
-                onChange={handleInputChange}
-                name="text"
-              />
+        <div className="submit-form">
+          {submitted ? (
+            <div>
+              <h4>You submitted successfully!</h4>
+              <Link to={"/restaurants/" + id} className="btn btn-success">
+                Back to Restaurant
+              </Link>
             </div>
-            <button onClick={saveReview} className="btn btn-success">
-              Submit
-            </button>
-          </div>
-        )}
-      </div>
-
+          ) : (
+            <div>
+              <div className="form-group">
+                <label htmlFor="description">
+                  {location.state?.currentReview?.user_id === props.user.id
+                    ? "Edit"
+                    : "Create"}{" "}
+                  Review
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="text"
+                  required
+                  onChange={handleInputChange}
+                  name="text"
+                  defaultValue={
+                    location.state?.currentReview
+                      ? location.state.currentReview.text
+                      : ""
+                  }
+                />
+              </div>
+              <button onClick={saveReview} className="btn btn-success">
+                Submit
+              </button>
+            </div>
+          )}
+        </div>
       ) : (
-      <div>
-        Please log in.
-      </div>
+        <div>Please log in.</div>
       )}
-
     </div>
   );
 };
